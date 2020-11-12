@@ -1,0 +1,303 @@
+class Lady {
+  content = "Hi，帅哥";
+  sayHello() {
+    return this.content;
+  }
+}
+
+const goddess = new Lady();
+console.log(goddess.sayHello());
+
+//这里提前说一下 TypeScrip 的继承和ES6中的继承是一样的。关键字也是extends
+class Lady {
+  content = "Hi，帅哥";
+  sayHello() {
+    return this.content;
+  }
+}
+class XiaoJieJie extends Lady {
+  sayLove() {
+    return "I love you";
+  }
+}
+
+const goddess = new XiaoJieJie();
+console.log(goddess.sayHello());
+console.log(goddess.sayLove());
+
+//那就必须继续讲讲重写XiaoJieJie这个类里重写父类的sayHello()
+class XiaoJieJie extends Lady {
+  sayLove() {
+    return "I love you!";
+  }
+  sayHello() {
+    return "Hi , honey!";
+  }
+}
+
+//就是super关键字的使用，比如我们还是想使用Lady类中说的话，但是在后面，加上你好两个字就可以了。这时候就可以使用super关键字，它代表父类中的方法。
+class XiaoJieJie extends Lady {
+  sayLove() {
+    return "I love you!";
+  }
+  sayHello() {
+    return super.sayHello() + "。你好！";
+  }
+}
+
+//三个关键词private、protected和public,也是三种访问类型
+
+class Person {
+  name: string;
+}
+
+const person = new Person();
+person.name = "jspang.com";
+
+console.log(person.name);
+
+//这时候可以打出jspang.com是因为我们如果不在类里对name的访问属性进行定义，那么它就会默认是public访问属性。
+class Person {
+    public name:string;
+    public sayHello(){
+        console.log(this.name + ' say Hello')
+    }
+}
+
+//这是的this.name就是类的内部调用。我们在下面在执行一下这个方法person.sayHello(),终端中可以看到一切正常运行了，顺利打印出了jspang.com say Hello这句话。在类的外部调用，我们就可以很简单的看出来了，比如下面的代码，从注释横线下，全部是类的外部。
+class Person {
+    public name:string;
+    public sayHello(){
+        console.log(this.name + 'say Hello')
+    }
+}
+//-------以下属于类的外部--------
+const person = new Person()
+person.name = 'jspang.com'
+person.sayHello()
+console.log(person.name)
+
+//private 访问属性的意思是，只允许再类的内部被调用，外部不允许调用
+
+class Person {
+    private name:string;
+    public sayHello(){
+        console.log(this.name + 'say Hello')  //此处不报错
+    }
+}
+//-------以下属于类的外部--------
+const person = new Person()
+person.name = 'jspang.com'    //此处报错
+person.sayHello()
+console.log(person.name)  //此处报错
+
+//protected 允许在类内及继承的子类中使用
+class Person {
+    protected name:string;
+    public sayHello(){
+        console.log(this.name + 'say Hello')  //此处不报错
+    }
+}
+
+class Teacher extends Person{
+    public sayBye(){
+        this.name;
+    }
+}
+//这时候在子类中使用this.name是不报错的。
+
+//类的构造函数
+class Person{
+    public name :string ;
+    constructor(name:string){
+        this.name=name
+    }
+
+}
+
+const person= new Person('jspang')
+console.log(person.name)
+
+class Person{
+    constructor(public name:string){
+    }
+}
+
+const person= new Person('jspang')
+console.log(person.name)
+
+//在子类中使用构造函数需要用super()调用父类的构造函数。
+class Person{
+    constructor(public name:string){}
+}
+
+class Teacher extends Person{
+    constructor(public age:number){
+        super('jspang')
+    }
+}
+
+const teacher = new Teacher(18)
+console.log(teacher.age)
+console.log(teacher.name)
+
+//这就是子类继承父类并有构造函数的原则，就是在子类里写构造函数时，必须用super()调用父类的构造函数，如果需要传值，也必须进行传值操作。就是是父类没有构造函数，子类也要使用super()进行调用，否则就会报错。
+
+class Person{}
+
+class Teacher extends Person{
+    constructor(public age:number){
+        super()
+    }
+}
+
+const teacher = new Teacher(18)
+console.log(teacher.age)
+
+//学了类的访问类型private，那这个东西如何使用？其实他的最大用处是封装一个属性，然后通过 Getter 和 Setter 的形式来访问和修改这个属性。
+我们新建一个文件Demo13.ts，然后声明一个XiaoJieJie（小姐姐）类，
+class Xiaojiejie {
+  constructor(private _age:number){}
+}
+//如果别人想知道，就必须通过getter属性知道,注意我这里用的是属性，对他就是一个属性。getter属性的关键字是get,后边跟着类似方法的东西,但是你要注意，它并不是方法，归根到底还是属性。
+class Xiaojiejie {
+  constructor(private _age:number){}
+  get age(){
+      return this._age
+  }
+}
+
+const dajiao = new Xiaojiejie(28)
+
+console.log(dajiao.getAge)
+//这时候你会觉的这么写不是多此一举吗?玄妙就在于getter里，我们可以对_age进行处理，比如别人问的时候我们就偷摸的减少 10 岁。代码可以写成这样。
+class Xiaojiejie {
+  constructor(private _age:number){}
+  get age(){
+      return this._age-10
+  }
+}
+
+//这时候大脚的年龄就编程了迷人的 18 岁，是不是通过这个小例子，一下子就明白了private和getter的用处。 _age是私有的，那类的外部就没办法改变，所以这时候可以用setter属性进行改变，代码如下：
+
+class Xiaojiejie {
+  constructor(private _age:number){}
+  get age(){
+      return this._age-10
+  }
+  set age(age:number){
+    this._age=age
+  }
+}
+
+const dajiao = new Xiaojiejie(28)
+dajiao.age=25
+console.log(dajiao.age)
+
+//其实setter也是可以保护私有变量的，现在大脚的年龄输出是 15 岁，这肯定不行，不符合法律哦，这样是我们在setter里给他加上个 3 岁，就可以了。
+set age(age:number){
+    this._age=age+3
+  }
+  
+ //常规写法
+ 
+ class Girl {
+  sayLove() {
+    return "I Love you";
+  }
+}
+
+const girl = new Girl();
+console.log(girl.sayLove());
+//但是现在你不想new出对象，而直接使用这个方法，那TypeScript为你提供了快捷的方式，用static声明的属性和方法，不需要进行声明对象，就可以直接使用，
+class Girl {
+  static sayLove() {
+    return "I Love you";
+  }
+}
+console.log(Girl.sayLove());
+
+//这节主要讲一下类里的一个概念就是抽象类，抽象类很父类很像，都需要继承，但是抽象类里一般都有抽象方法。继承抽象类的类必须实现抽象方法才可以。在讲抽象类之前，我想把上节课我遗忘的一个知识点给大家不上，那就是类里的只读属性readonly.
+class Person {
+    constructor(public name:string ){ }
+}
+
+const person = new Person('jspang')
+console.log(person.name)
+
+//写完后我们可以在终端(Terminal)中看一下结果,结果就应该是jspang。比如我现在有一个需求，就是在实例化对象时赋予的名字，以后不能再更改了，也就是我们常说的只读属性。我们先来看现在这种情况是可以随意更改的，比如我写下面的代码。
+
+class Person {
+    constructor(public name:string ){ }
+}
+
+const person = new Person('jspang')
+person.name= '谢广坤'
+console.log(person.name)
+
+//这时候就可以用一个关键词readonly,也就是只读的意思，来修改Person类代码。
+class Person {
+    public readonly _name :string;
+    constructor(name:string ){
+        this._name = name;
+    }
+}
+
+const person = new Person('jspang')
+person._name= '谢广坤'
+console.log(person._name)
+//这样写完后，VSCode就回直接给我们报错，告诉我们_name属性是只读属性，不能修改。这是上节课遗忘的一个知识点，我在这里给你补上了。
+//什么是抽象类那？我给大家举个例子，比如我开了一个红浪漫洗浴中心，里边有服务员，有初级技师，高级技师，每一个岗位我都写成一个类，那代码就是这样的。
+class Waiter {}
+
+class BaseTeacher {}
+
+class seniorTeacher {}
+我作为老板，我要求无论是什么职位，都要有独特的技能，比如服务员就是给顾客倒水，初级技师要求会泰式按摩，高级技师要求会 SPA 全身按摩。这是一个硬性要求，但是每个职位的技能有不同，这时候就可以用抽象类来解决问题。
+
+抽象类的关键词是abstract,里边的抽象方法也是abstract开头的，现在我们就写一个Girl的抽象类。
+abstract class Girl{
+    abstract skill()  //因为没有具体的方法，所以我们这里不写括号
+
+}
+有了这个抽象类，三个类就可以继承这个类，然后会要求必须实现skill()方法，代码如下：
+abstract class Girl{
+    abstract skill()  //因为没有具体的方法，所以我们这里不写括号
+
+}
+
+class Waiter extends Girl{
+    skill(){
+        console.log('大爷，请喝水！')
+    }
+}
+
+class BaseTeacher extends Girl{
+    skill(){
+        console.log('大爷，来个泰式按摩吧！')
+    }
+}
+
+class seniorTeacher extends Girl{
+    skill(){
+        console.log('大爷，来个SPA全身按摩吧！')
+    }
+}
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
